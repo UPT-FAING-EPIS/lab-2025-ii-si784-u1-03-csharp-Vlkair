@@ -1,0 +1,120 @@
+name: Create Release Version
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number for the release (e.g., v1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  DOTNET_VERSION: '8.x'
+
+jobs:
+  build-test-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./Bank
+      
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ./Bank
+      
+      - name: Run unit tests
+        run: dotnet test --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+        working-directory: ./Bank
+      
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      
+      - name: Generate test coverage report
+        run: reportgenerator "-reports:./*/*/*/coverage.cobertura.xml" "-targetdir:CoverageReport" "-reporttypes:Html;MarkdownSummaryGithub"
+        working-directory: ./Bank
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: ./Bank/**/TestResults/**
+      
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./Bank/CoverageReport
+      
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Pack release package
+        run: dotnet pack ./Bank.WebApi/Bank.WebApi.csproj --configuration Release --no-build --output ./release -p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+        working-directory: ./Bank
+      
+      - name: Create release archive
+        run: |
+          mkdir -p release-files
+          cp -r Bank/Bank.WebApi/bin/Release/net8.0/* release-files/
+          cp Bank/CoverageReport/SummaryGithub.md release-files/TEST-RESULTS.md || echo "Coverage report not found"
+          cd release-files
+          zip -r ../Bank-${{ steps.get_version.outputs.VERSION }}.zip .
+        
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## Release ${{ steps.get_version.outputs.VERSION }}
+            
+            ### Changes
+            - Build configuration: Release
+            - All unit tests passed
+            - Code coverage report included
+            
+            ### Artifacts
+            - NuGet package
+            - Build binaries
+            - Test results and coverage report
+          files: |
+            Bank-${{ steps.get_version.outputs.VERSION }}.zip
+            ./Bank/release/*.nupkg
+            ./Bank/CoverageReport/SummaryGithub.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          dotnet nuget push "./Bank/release/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "github" --skip-duplicate

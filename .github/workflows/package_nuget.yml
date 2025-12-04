@@ -1,0 +1,120 @@
+name: Build and Publish NuGet Package
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.x'
+
+jobs:
+  build-test-analyze:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      
+      - name: Install SonarCloud scanner
+        run: dotnet tool install --global dotnet-sonarscanner
+      
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./Bank
+      
+      - name: Begin SonarCloud analysis
+        if: env.SONAR_TOKEN != ''
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner begin \
+            /k:"${{ secrets.SONAR_PROJECT_KEY }}" \
+            /o:"${{ secrets.SONAR_ORGANIZATION }}" \
+            /d:sonar.token=${{ secrets.SONAR_TOKEN }} \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+        working-directory: ./Bank
+      
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ./Bank
+      
+      - name: Run tests with coverage
+        run: dotnet test --configuration Release --no-build --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        working-directory: ./Bank
+      
+      - name: Generate coverage report
+        run: reportgenerator "-reports:./*/*/*/coverage.opencover.xml" "-targetdir:CoverageReport" "-reporttypes:Html;Cobertura"
+        working-directory: ./Bank
+      
+      - name: End SonarCloud analysis
+        if: env.SONAR_TOKEN != ''
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token=${{ secrets.SONAR_TOKEN }}
+        working-directory: ./Bank
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: ./Bank/**/TestResults/**
+      
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./Bank/CoverageReport
+      
+      - name: Pack NuGet package
+        run: |
+          mkdir -p nupkgs
+          dotnet pack ./Bank.WebApi/Bank.WebApi.csproj --configuration Release --no-build --output ./nupkgs
+        working-directory: ./Bank
+      
+      - name: Upload NuGet package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: ./Bank/nupkgs/*.nupkg
+      
+      - name: Publish to GitHub Packages
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" || true
+          if ls ./nupkgs/*.nupkg 1> /dev/null 2>&1; then
+            dotnet nuget push "./nupkgs/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source "github" --skip-duplicate
+          else
+            echo "No .nupkg files found in ./nupkgs/"
+            exit 1
+          fi
+        working-directory: ./Bank

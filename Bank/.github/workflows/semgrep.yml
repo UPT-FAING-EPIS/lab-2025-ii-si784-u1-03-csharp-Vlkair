@@ -1,0 +1,59 @@
+name: Semgrep Analysis
+
+on: push
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      security-events: write
+      pages: write
+      id-token: write
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Semgrep scan SARIF
+        run: semgrep scan --config="p/default" --sarif --output=report.sarif --metrics=off
+      
+      - name: Semgrep scan JSON
+        run: semgrep scan --config="p/default" --json --output=semgrep.json --metrics=off
+      
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: report.sarif
+      
+      - name: Install dependencies for prospector2html
+        continue-on-error: true
+        run: |
+          apk add --no-cache gcc musl-dev python3-dev py3-pip
+          pip3 install --break-system-packages prospector2html || echo "prospector2html installation failed, continuing..."
+      
+      - name: Generate HTML report
+        continue-on-error: true
+        run: |
+          if command -v prospector-html &> /dev/null; then
+            prospector-html --input semgrep.json --output semgrep-report.html --filter semgrep
+          else
+            echo "<html><body><h1>Semgrep Results</h1><pre>$(cat semgrep.json)</pre></body></html>" > semgrep-report.html
+          fi
+      
+      - name: Upload HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-report
+          path: semgrep-report.html
+      
+      - name: Prepare GitHub Pages
+        run: |
+          mkdir -p gh-pages
+          cp semgrep-report.html gh-pages/index.html
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+          publish_branch: gh-pages

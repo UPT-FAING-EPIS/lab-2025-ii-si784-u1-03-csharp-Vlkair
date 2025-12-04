@@ -1,0 +1,81 @@
+name: Publish Documentation
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./Bank
+      
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ./Bank
+      
+      - name: Setup .NET 6 for dll2mmd
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.x'
+      
+      - name: Install DocFx
+        run: dotnet tool install -g docfx
+      
+      - name: Install dll2mmd
+        run: dotnet tool install -g dll2mmd
+      
+      - name: Install ReportGenerator
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+      
+      - name: Run tests with coverage
+        run: dotnet test --collect:"XPlat Code Coverage" --no-build --configuration Release
+        working-directory: ./Bank
+      
+      - name: Generate coverage report
+        run: reportgenerator "-reports:./*/*/*/coverage.cobertura.xml" "-targetdir:Cobertura" -reporttypes:MarkdownSummaryGithub
+        working-directory: ./Bank
+      
+      - name: Generate class diagram
+        run: dll2mmd -f Bank.WebApi/bin/Release/net8.0/Bank.WebApi.dll -o disenio.md
+        working-directory: ./Bank
+      
+      - name: Generate DocFx metadata
+        run: docfx metadata docfx.json
+        working-directory: ./Bank
+      
+      - name: Build documentation
+        run: docfx build docfx.json
+        working-directory: ./Bank
+      
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: ./Bank/_site
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./Bank/_site
+          publish_branch: gh-pages-docs
+          destination_dir: docs

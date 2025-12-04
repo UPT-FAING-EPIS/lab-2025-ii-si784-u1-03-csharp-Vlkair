@@ -1,0 +1,24 @@
+version: '3.4'
+services:
+  webapi:
+    image: api-bank
+    build:
+      context: .
+    ports:
+        - ${APP_HOST}:80
+    environment:
+        - "ConnectionStrings__DefaultConnection=Server=${DB_SERVER},${DB_PORT};Initial Catalog=${DB_NAME};Persist Security Info=False;User ID=${DB_USERNAME};Password=${DB_PASSWORD};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=${TRUST_SERVER_CERTIFICATE}; Integrated Security=${INTEGRATED_SECURITY};Connection Timeout=30;"
+    depends_on:
+        - "sqlServer"
+    links:
+        - "sqlServer"
+
+  sqlServer:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    hostname: "sqlserver"
+    environment:
+        SA_PASSWORD: ${DB_PASSWORD}
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+        - "${DB_PORT}:1433"
