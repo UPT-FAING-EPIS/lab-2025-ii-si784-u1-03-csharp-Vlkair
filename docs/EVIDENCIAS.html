@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Evidencias del Laboratorio 03 - Pruebas Est&#225;ticas de Seguridad con Semgrep | Bank App </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Evidencias del Laboratorio 03 - Pruebas Est&#225;ticas de Seguridad con Semgrep | Bank App ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UPT-FAING-EPIS/lab-2025-ii-si784-u1-03-csharp-Vlkair/blob/main/Bank/EVIDENCIAS.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="Bank.App">
+            Bank.App
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="evidencias-del-laboratorio-03---pruebas-estáticas-de-seguridad-con-semgrep">Evidencias del Laboratorio 03 - Pruebas Estáticas de Seguridad con Semgrep</h1>
+
+<p><strong>Estudiante:</strong> Diego Castillo<br>
+<strong>Fecha:</strong> 3 de diciembre de 2025</p>
+<h2 id="actividades-completadas">Actividades Completadas</h2>
+<h3 id="-1-nombre-agregado-al-readme">✅ 1. Nombre agregado al README</h3>
+<p>Se agregó el nombre del estudiante (Diego Castillo) al archivo README.md del repositorio.</p>
+<h3 id="-2-estructura-del-proyecto-bank">✅ 2. Estructura del Proyecto Bank</h3>
+<p>Se creó la solución Bank con los siguientes componentes:</p>
+<ul>
+<li><strong>Bank.sln</strong>: Solución principal</li>
+<li><strong>Bank.WebApi</strong>: Proyecto API Web con .NET 8</li>
+<li><strong>Bank.WebApi.Tests</strong>: Proyecto de pruebas unitarias con MSTest y NUnit</li>
+<li>Instalación de herramientas globales: dll2mmd, docfx, dotnet-reportgenerator-globaltool</li>
+</ul>
+<h3 id="-3-código-fuente-implementado">✅ 3. Código Fuente Implementado</h3>
+<p>Archivos creados:</p>
+<ul>
+<li><code>Bank.WebApi/Models/BankAccount.cs</code>: Clase principal con métodos Debit y Credit</li>
+<li><code>Bank.WebApi.Tests/BankAccountTests.cs</code>: Pruebas unitarias para BankAccount</li>
+<li><code>Dockerfile</code>: Configuración para contenedor Docker</li>
+<li><code>docker-compose.yml</code>: Orquestación de servicios (WebApi + SQL Server)</li>
+<li><code>docfx.json</code>: Configuración de documentación</li>
+<li><code>toc.yml</code> e <code>index.md</code>: Archivos de navegación de documentación</li>
+</ul>
+<h3 id="-4-workflow-semgrepyml-mejorado">✅ 4. Workflow semgrep.yml Mejorado</h3>
+<p><strong>Archivo:</strong> <code>.github/workflows/semgrep.yml</code></p>
+<p><strong>Funcionalidades agregadas:</strong></p>
+<ul>
+<li>✅ Análisis de seguridad con Semgrep</li>
+<li>✅ Generación de reporte SARIF para GitHub Code Scanning</li>
+<li>✅ Generación de reporte JSON</li>
+<li>✅ Instalación de Python y prospector2html</li>
+<li>✅ Generación de reporte HTML (semgrep-report.html)</li>
+<li>✅ Upload del reporte como artifact</li>
+<li>✅ Publicación automática en GitHub Pages (rama gh-pages)</li>
+</ul>
+<p><strong>Evidencia:</strong>
+El workflow genera un reporte HTML completo y lo publica automáticamente en GitHub Pages cada vez que se hace push.</p>
+<h3 id="-5-workflow-publish_docsyml">✅ 5. Workflow publish_docs.yml</h3>
+<p><strong>Archivo:</strong> <code>.github/workflows/publish_docs.yml</code></p>
+<p><strong>Funcionalidades:</strong></p>
+<ul>
+<li>✅ Checkout del repositorio</li>
+<li>✅ Configuración de .NET 8.x</li>
+<li>✅ Restauración y build de la solución</li>
+<li>✅ Instalación de DocFx, dll2mmd y ReportGenerator</li>
+<li>✅ Ejecución de pruebas con cobertura de código</li>
+<li>✅ Generación de reporte de cobertura (formato Markdown)</li>
+<li>✅ Generación de diagrama de clases con dll2mmd</li>
+<li>✅ Generación de metadata con DocFx</li>
+<li>✅ Build de documentación con DocFx</li>
+<li>✅ Upload de artifact de documentación</li>
+<li>✅ Publicación en GitHub Pages (rama gh-pages-docs, directorio /docs)</li>
+</ul>
+<p><strong>Evidencia:</strong>
+Documentación completa generada automáticamente con pruebas, cobertura y diagramas de clases.</p>
+<h3 id="-6-workflow-package_nugetyml">✅ 6. Workflow package_nuget.yml</h3>
+<p><strong>Archivo:</strong> <code>.github/workflows/package_nuget.yml</code></p>
+<p><strong>Funcionalidades:</strong></p>
+<ul>
+<li>✅ Checkout con fetch-depth: 0 para análisis completo</li>
+<li>✅ Setup de .NET 8.x</li>
+<li>✅ Cache de paquetes SonarCloud</li>
+<li>✅ Instalación de SonarCloud scanner</li>
+<li>✅ Instalación de ReportGenerator</li>
+<li>✅ Restauración de dependencias</li>
+<li>✅ Inicio de análisis con SonarCloud</li>
+<li>✅ Build en modo Release</li>
+<li>✅ Ejecución de pruebas unitarias con cobertura (formato OpenCover)</li>
+<li>✅ Generación de reporte de cobertura (HTML y Cobertura)</li>
+<li>✅ Finalización de análisis con SonarCloud</li>
+<li>✅ Upload de resultados de pruebas como artifact</li>
+<li>✅ Upload de reporte de cobertura como artifact</li>
+<li>✅ Empaquetado NuGet del proyecto Bank.WebApi</li>
+<li>✅ Publicación del paquete en GitHub Packages</li>
+</ul>
+<p><strong>Evidencia:</strong>
+Workflow completo que integra análisis de calidad con SonarCloud, pruebas automatizadas y publicación de paquetes.</p>
+<p><strong>Nota:</strong> Requiere configuración de secrets en GitHub:</p>
+<ul>
+<li><code>SONAR_TOKEN</code></li>
+<li><code>SONAR_PROJECT_KEY</code></li>
+<li><code>SONAR_ORGANIZATION</code></li>
+</ul>
+<h3 id="-7-workflow-release_versionyml">✅ 7. Workflow release_version.yml</h3>
+<p><strong>Archivo:</strong> <code>.github/workflows/release_version.yml</code></p>
+<p><strong>Funcionalidades:</strong></p>
+<ul>
+<li>✅ Trigger por tags (v*) o workflow_dispatch manual</li>
+<li>✅ Setup de .NET 8.x</li>
+<li>✅ Restauración y build en Release</li>
+<li>✅ <strong>Ejecución de pruebas unitarias</strong> con logger TRX</li>
+<li>✅ Cobertura de código con XPlat Code Coverage</li>
+<li>✅ Instalación de ReportGenerator</li>
+<li>✅ Generación de reporte de cobertura (HTML y Markdown)</li>
+<li>✅ Upload de resultados de pruebas como artifact</li>
+<li>✅ Upload de reporte de cobertura como artifact</li>
+<li>✅ Extracción de versión desde tag o input manual</li>
+<li>✅ Empaquetado con versión específica</li>
+<li>✅ Creación de archivo ZIP con binarios y resultados de pruebas</li>
+<li>✅ Creación de GitHub Release con:
+<ul>
+<li>Tag de versión</li>
+<li>Descripción con cambios</li>
+<li>Archivo ZIP</li>
+<li>Paquete NuGet</li>
+<li>Reporte de cobertura</li>
+</ul>
+</li>
+<li>✅ Publicación del paquete en GitHub Packages</li>
+</ul>
+<p><strong>Evidencia:</strong>
+Workflow completo de release que <strong>incluye pruebas unitarias</strong>, genera artifacts completos y publica en GitHub Releases y Packages.</p>
+<h2 id="resumen-de-archivos-github-workflows">Resumen de Archivos GitHub Workflows</h2>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Descripción</th>
+<th>Pruebas</th>
+<th>Publicación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>semgrep.yml</code></td>
+<td>Análisis de seguridad estático</td>
+<td>No</td>
+<td>GitHub Pages</td>
+</tr>
+<tr>
+<td><code>publish_docs.yml</code></td>
+<td>Documentación con DocFx</td>
+<td>Sí (con cobertura)</td>
+<td>GitHub Pages</td>
+</tr>
+<tr>
+<td><code>package_nuget.yml</code></td>
+<td>Build, test y paquete NuGet</td>
+<td>Sí (con cobertura)</td>
+<td>GitHub Packages + SonarCloud</td>
+</tr>
+<tr>
+<td><code>release_version.yml</code></td>
+<td>Releases con pruebas</td>
+<td><strong>Sí (incluidas)</strong></td>
+<td>GitHub Releases + Packages</td>
+</tr>
+</tbody>
+</table>
+<h2 id="notas-importantes">Notas Importantes</h2>
+<ol>
+<li><strong>GitHub Pages</strong>: Se requiere habilitar GitHub Pages en la configuración del repositorio</li>
+<li><strong>SonarCloud</strong>: Se necesita configurar una cuenta en SonarCloud y añadir los secrets correspondientes</li>
+<li><strong>Packages</strong>: GitHub Packages requiere autenticación con GITHUB_TOKEN (proporcionado automáticamente)</li>
+<li><strong>Releases</strong>: Se pueden crear mediante tags o manualmente desde GitHub Actions</li>
+</ol>
+<h2 id="verificación">Verificación</h2>
+<p>Para verificar que todo funciona correctamente:</p>
+<ol>
+<li>Hacer push al repositorio</li>
+<li>Ir a la pestaña &quot;Actions&quot; en GitHub</li>
+<li>Verificar que los workflows se ejecuten correctamente</li>
+<li>Revisar los artifacts generados</li>
+<li>Verificar GitHub Pages y Releases según corresponda</li>
+</ol>
+<hr>
+<p><strong>Laboratorio completado exitosamente</strong> ✅</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/UPT-FAING-EPIS/lab-2025-ii-si784-u1-03-csharp-Vlkair/blob/main/Bank/EVIDENCIAS.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

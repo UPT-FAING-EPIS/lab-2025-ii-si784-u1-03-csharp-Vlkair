@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Bank Application | Bank App </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Bank Application | Bank App ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/UPT-FAING-EPIS/lab-2025-ii-si784-u1-03-csharp-Vlkair/blob/main/Bank/README.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="Bank.App">
+            Bank.App
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="bank-application">Bank Application</h1>
+
+<h2 id="descripción">Descripción</h2>
+<p>Aplicación bancaria desarrollada en .NET 8 con pruebas unitarias, análisis de seguridad y documentación automatizada.</p>
+<h2 id="estructura-del-proyecto">Estructura del Proyecto</h2>
+<pre><code>Bank/
+├── .github/workflows/          # GitHub Actions workflows
+│   ├── semgrep.yml            # Análisis de seguridad + GitHub Pages
+│   ├── publish_docs.yml       # Documentación con DocFx
+│   ├── package_nuget.yml      # Build, test, SonarCloud y NuGet
+│   └── release_version.yml    # Releases con pruebas unitarias
+├── Bank.WebApi/               # Proyecto API Web
+│   └── Models/
+│       └── BankAccount.cs     # Clase principal
+├── Bank.WebApi.Tests/         # Proyecto de pruebas
+│   └── BankAccountTests.cs    # Pruebas unitarias
+├── Dockerfile                  # Configuración Docker
+├── docker-compose.yml          # Orquestación de servicios
+├── docfx.json                  # Configuración DocFx
+├── toc.yml                     # Tabla de contenidos
+├── index.md                    # Página principal de docs
+└── EVIDENCIAS.md               # Documento de evidencias
+</code></pre>
+<h2 id="prerrequisitos">Prerrequisitos</h2>
+<ul>
+<li>.NET 8.0 SDK o superior</li>
+<li>Docker Desktop (opcional)</li>
+<li>Python 3.x con pip (para Semgrep)</li>
+<li>Cuenta en GitHub (para workflows)</li>
+<li>Cuenta en SonarCloud (opcional, para análisis de calidad)</li>
+</ul>
+<h2 id="instalación-local">Instalación Local</h2>
+<h3 id="1-restaurar-dependencias">1. Restaurar dependencias</h3>
+<pre><code class="lang-bash">cd Bank
+dotnet restore
+</code></pre>
+<h3 id="2-compilar-la-solución">2. Compilar la solución</h3>
+<pre><code class="lang-bash">dotnet build --configuration Release
+</code></pre>
+<h3 id="3-ejecutar-pruebas">3. Ejecutar pruebas</h3>
+<pre><code class="lang-bash">dotnet test
+</code></pre>
+<h3 id="4-ejecutar-pruebas-con-cobertura">4. Ejecutar pruebas con cobertura</h3>
+<pre><code class="lang-bash">dotnet test --collect:&quot;XPlat Code Coverage&quot;
+reportgenerator &quot;-reports:./*/*/*/coverage.cobertura.xml&quot; &quot;-targetdir:Cobertura&quot; -reporttypes:MarkdownSummaryGithub
+</code></pre>
+<h2 id="ejecución-con-docker">Ejecución con Docker</h2>
+<h3 id="compilar-y-ejecutar">Compilar y ejecutar</h3>
+<pre><code class="lang-bash">docker-compose up --build
+</code></pre>
+<p>La API estará disponible en <code>http://localhost:${APP_HOST}</code></p>
+<h2 id="workflows-de-github-actions">Workflows de GitHub Actions</h2>
+<h3 id="1-semgrep-analysis-semgrepyml">1. Semgrep Analysis (semgrep.yml)</h3>
+<ul>
+<li><strong>Trigger:</strong> Push a cualquier rama</li>
+<li><strong>Funcionalidades:</strong>
+<ul>
+<li>Análisis de seguridad con Semgrep</li>
+<li>Generación de reporte SARIF para Code Scanning</li>
+<li>Generación de reporte HTML</li>
+<li>Publicación en GitHub Pages</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-publish-documentation-publish_docsyml">2. Publish Documentation (publish_docs.yml)</h3>
+<ul>
+<li><strong>Trigger:</strong> Push a main o manual</li>
+<li><strong>Funcionalidades:</strong>
+<ul>
+<li>Ejecución de pruebas con cobertura</li>
+<li>Generación de diagrama de clases</li>
+<li>Generación de documentación con DocFx</li>
+<li>Publicación en GitHub Pages</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-build-and-publish-nuget-package_nugetyml">3. Build and Publish NuGet (package_nuget.yml)</h3>
+<ul>
+<li><strong>Trigger:</strong> Push a main, PR o manual</li>
+<li><strong>Funcionalidades:</strong>
+<ul>
+<li>Análisis con SonarCloud</li>
+<li>Ejecución de pruebas unitarias</li>
+<li>Reporte de cobertura</li>
+<li>Empaquetado NuGet</li>
+<li>Publicación en GitHub Packages</li>
+</ul>
+</li>
+</ul>
+<p><strong>Secrets requeridos:</strong></p>
+<ul>
+<li><code>SONAR_TOKEN</code></li>
+<li><code>SONAR_PROJECT_KEY</code></li>
+<li><code>SONAR_ORGANIZATION</code></li>
+</ul>
+<h3 id="4-create-release-version-release_versionyml">4. Create Release Version (release_version.yml)</h3>
+<ul>
+<li><strong>Trigger:</strong> Tag v* o manual</li>
+<li><strong>Funcionalidades:</strong>
+<ul>
+<li>Ejecución de pruebas unitarias</li>
+<li>Generación de cobertura</li>
+<li>Empaquetado de release</li>
+<li>Creación de GitHub Release</li>
+<li>Publicación en GitHub Packages</li>
+</ul>
+</li>
+</ul>
+<p><strong>Uso:</strong></p>
+<pre><code class="lang-bash"># Crear un tag y hacer push
+git tag v1.0.0
+git push origin v1.0.0
+
+# O ejecutar manualmente desde GitHub Actions
+</code></pre>
+<h2 id="documentación">Documentación</h2>
+<p>La documentación se genera automáticamente con DocFx e incluye:</p>
+<ul>
+<li>Diagrama de clases</li>
+<li>Reporte de pruebas</li>
+<li>Cobertura de código</li>
+<li>Documentación API</li>
+</ul>
+<p>Acceder en: <code>https://&lt;usuario&gt;.github.io/&lt;repo&gt;/docs/</code></p>
+<h2 id="análisis-de-seguridad">Análisis de Seguridad</h2>
+<p>El reporte de Semgrep se publica automáticamente en:
+<code>https://&lt;usuario&gt;.github.io/&lt;repo&gt;/</code></p>
+<h2 id="clase-bankaccount">Clase BankAccount</h2>
+<h3 id="propiedades">Propiedades</h3>
+<ul>
+<li><code>CustomerName</code>: Nombre del cliente (solo lectura)</li>
+<li><code>Balance</code>: Balance actual de la cuenta (solo lectura)</li>
+</ul>
+<h3 id="métodos">Métodos</h3>
+<ul>
+<li><code>Debit(double amount)</code>: Retira fondos de la cuenta</li>
+<li><code>Credit(double amount)</code>: Deposita fondos en la cuenta</li>
+</ul>
+<h3 id="ejemplo-de-uso">Ejemplo de uso</h3>
+<pre><code class="lang-csharp">BankAccount account = new BankAccount(&quot;John Doe&quot;, 1000.00);
+account.Credit(500.00);  // Balance: 1500.00
+account.Debit(200.00);   // Balance: 1300.00
+</code></pre>
+<h2 id="configuración-de-github">Configuración de GitHub</h2>
+<h3 id="1-habilitar-github-pages">1. Habilitar GitHub Pages</h3>
+<ol>
+<li>Ir a Settings &gt; Pages</li>
+<li>Source: Deploy from a branch</li>
+<li>Branch: gh-pages (o gh-pages-docs para documentación)</li>
+<li>Guardar</li>
+</ol>
+<h3 id="2-configurar-sonarcloud">2. Configurar SonarCloud</h3>
+<ol>
+<li>Crear cuenta en <a href="https://sonarcloud.io">https://sonarcloud.io</a></li>
+<li>Crear nuevo proyecto</li>
+<li>Obtener: Organization Key, Project Key y Token</li>
+<li>Agregar secrets en GitHub:
+<ul>
+<li><code>SONAR_TOKEN</code></li>
+<li><code>SONAR_PROJECT_KEY</code></li>
+<li><code>SONAR_ORGANIZATION</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="3-habilitar-github-packages">3. Habilitar GitHub Packages</h3>
+<p>GitHub Packages está habilitado por defecto. El <code>GITHUB_TOKEN</code> se proporciona automáticamente.</p>
+<h2 id="tecnologías-utilizadas">Tecnologías Utilizadas</h2>
+<ul>
+<li><strong>.NET 8.0</strong>: Framework principal</li>
+<li><strong>MSTest/NUnit</strong>: Frameworks de pruebas</li>
+<li><strong>Docker</strong>: Containerización</li>
+<li><strong>Semgrep</strong>: Análisis estático de seguridad</li>
+<li><strong>SonarCloud</strong>: Análisis de calidad de código</li>
+<li><strong>DocFx</strong>: Generación de documentación</li>
+<li><strong>GitHub Actions</strong>: CI/CD</li>
+<li><strong>GitHub Pages</strong>: Hosting de documentación y reportes</li>
+</ul>
+<h2 id="autor">Autor</h2>
+<p>Diego Castillo</p>
+<h2 id="licencia">Licencia</h2>
+<p>Este proyecto es parte del Laboratorio 03 de Pruebas Estáticas de Seguridad.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/UPT-FAING-EPIS/lab-2025-ii-si784-u1-03-csharp-Vlkair/blob/main/Bank/README.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
